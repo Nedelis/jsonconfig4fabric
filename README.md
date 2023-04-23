@@ -2,6 +2,8 @@
 
 Welcome to the jsonconfig4fabric documentation! Here you can find out how to use this utility.
 
+<img src="https://github.com/Nedelis/jsonconfig4fabric/blob/main/jsonconfig4fabric_logo.png?raw=true" alt="logo" width="200px">
+
 # Table of contents:
 1. [Installation](#installation)
 2. [Set up the Logger](#set-up-the-logger)
