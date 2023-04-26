@@ -6,6 +6,8 @@ Welcome to the jsonconfig4fabric! This is relatively simple utility for creating
 
 **This README is for the version 2.0b!**
 
+**If you have any questions, you can ask them in my discord — `Nedelis#9496`!**
+
 # Table of contents:
 1. [Installation](#installation)
 2. [Set up the Logger](#set-up-the-logger)
