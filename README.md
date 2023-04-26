@@ -1,8 +1,10 @@
 # jsonconfig4fabric
 
-Welcome to the jsonconfig4fabric documentation! Here you can find out how to use this utility.
+Welcome to the jsonconfig4fabric! This is relatively simple utility for creating and use .json configs in your mods. Here you can find out how to use jsonconfig4fabric.
 
 <img src="https://github.com/Nedelis/jsonconfig4fabric/blob/main/jsonconfig4fabric_logo.png?raw=true" alt="logo" width="200px">
+
+**This README is for the version 2.0b!**
 
 # Table of contents:
 1. [Installation](#installation)
