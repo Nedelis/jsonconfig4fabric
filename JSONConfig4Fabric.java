@@ -226,7 +226,7 @@ import java.util.*;
  * <p>
  * You should read the <a href="https://github.com/Nedelis/jsonconfig4fabric">documentation<a/>
  * to find out how to use this utility
- * @version 3.0b
+ * @version 3.1b
  */
 @SuppressWarnings("unused")
 public class JSONConfig4Fabric {
