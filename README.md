@@ -4,7 +4,7 @@ Welcome to the jsonconfig4fabric! This is relatively simple utility for creating
 
 <img src="https://github.com/Nedelis/jsonconfig4fabric/blob/main/jsonconfig4fabric_logo.png?raw=true" alt="logo" width="200px">
 
-**This README is for the version 2.0b!**
+**This README is for the version 3.1b!**
 
 **If you have any questions, you can ask them in my discord — `Nedelis#9496`!**
 
@@ -25,19 +25,19 @@ SomeModProject
                 └── example
                     └── somemod
                         └── config
-                            └── JSONConfigHandler.java <- HERE
+                            └── JSONConfig4Fabric.java <- HERE
 ```
 3. That's all. Now you are ready to use jsonconfig4fabric!
 > [Return to the table of contents](#table-of-contents)
 
 # Set up the Logger
-1. Open the `JSONConfigHandler.java`
+1. Open the `JSONConfig4Fabric.java`
 2. First way: <br/>
-   Find this line: `private static Logger LOGGER = LoggerFactory.getLogger("modID:JSONConfigHandler");` <br/>
-   Replace `modId` with your mod's ID or replace the whole logger name (`"modId:JSONConfigHandler"`) with the name you want <br/>
+   Find this line: `private static Logger LOGGER = LoggerFactory.getLogger("modID:JSONConfig4Fabric");` <br/>
+   Replace `modId` with your mod's ID or replace the whole logger name (`"modId:JSONConfig4Fabric"`) with the name you want <br/>
    Ready! <br/>
 3. Second way: <br/>
-   Write the following line in your mod's onInitialize() method: `JSONConfigHandler.setLogger("some_logger_name")` and import the `JSONConfigHandler class` <br/>
+   Write the following line in your mod's onInitialize() method: `JSONConfig4Fabric.setLogger("some_logger_name")` and import the `JSONConfig4Fabric class` <br/>
    Ready! <br/>
    *(please notice, that using this way to set up your Logger is not recommended, because you'll have to read config files in onInitialize() method too)* <br/>
 4. That's all. You have specified Logger of jsonconfig4fabric!
@@ -55,7 +55,7 @@ SomeModProject
 │       │       └── example
 │       │           └── somemod
 │       │               ├── config
-│       │               │   └── JSONConfigHandler.java
+│       │               │   └── JSONConfig4Fabric.java
 │       │               └── SomeMod.java
 │       ├── resources
 │       │   └── assets
@@ -68,7 +68,7 @@ SomeModProject
 ```
 `...` means other folders which we don't need for following examples
 
-Before reading examples, you should open JSONConfigHandler.java and read javadocs for each method we'll use.
+Before reading examples, you should open [JSONConfig4Fabric.java](https://github.com/Nedelis/jsonconfig4fabric/blob/main/JSONConfig4Fabric.java) and read javadocs for each method we'll use.
 
 > [Return to the table of contents](#table-of-contents)
 
@@ -100,18 +100,20 @@ Next, we need do create java-class which will representing our config in java. L
     private static final File defaultConfigFile = new File(SomeMod.class.getClassLoader().getResource("assets/somemod/config/somemod_config.json").getPath());
     
     // Creating config
-    private static final JSONConfigHandler config = JSONConfigHandler.of("somemod_config", defaultConfigFile);
+    private static final JSONConfig4Fabric config = JSONConfig4Fabric.of("somemod_config", defaultConfigFile);
     
     // And finally assign config values to java fields
-    // asInt has two arguments - (String key, int def), where key is value key and def is default int value
-    public static final int FIRST_TIER = config.asInt("firstTier", 0);
-    public static final int SECOND_TIER = config.asInt("secondTier", 5);
-    public static final int THIRD_TIER = config.asInt("thirdTier", 15);
-    public static final int FOURTH_TIER = config.asInt("fourthTier", 30);
+    // T getAsJavaValue(String key, T def) has 2 agruments:
+    // String key — key corresponding to the required value;
+    // T def — default value, which will be returned if conversion fails (T specifies the return type of method)
+    public static final int FIRST_TIER = config.getAsJavaValue("firstTier", 0);
+    public static final int SECOND_TIER = config.getAsJavaValue("secondTier", 5);
+    public static final int THIRD_TIER = config.getAsJavaValue("thirdTier", 15);
+    public static final int FOURTH_TIER = config.getAsJavaValue("fourthTier", 30);
   }
 ```
 
-By so, we've moved in our config values in java, and now we can use it for our mod!
+By so, we've converted our config values to java values, and now we can use it for our mod!
 
 > [Return to the table of contents](#table-of-contents)
 
@@ -159,32 +161,32 @@ This looks pretty hard, isn't it? Yeah, but we can move it to java relatively ea
     private static final File defaultConfigFile = new File(SomeMod.class.getClassLoader().getResource("assets/somemod/config/somemod_config.json").getPath());
     
     // Creating config
-    private static final JSONConfigHandler config = JSONConfigHandler.of("somemod_config", defaultConfigFile);
+    private static final JSONConfig4Fabric config = JSONConfig4Fabric.of("somemod_config", defaultConfigFile);
     
     // Assign values
-    public static final Map<String, Object> DISABLED_ITEMS = config.asMap("disabledItems", new HashMap<String, Object>());
+    public static final Map<String, Object> DISABLED_ITEMS = config.getAsJavaValue("disabledItems", new HashMap<String, Object>());
     // And, for example, let's get allWorlds disabled items!
-    public static final List<Object> ALL_WORLDS_DISABLED_ITEMS = JSONConfigHandler.ParseUtils.asList(DISABLED_ITEMS.get("allWorlds"), new ArrayList<Object>());
-    // skip some other well-known stuff...
-    // And know, for example, we need reload time of chunkDestructorWand. Let's find it!
+    public static final List<Object> ALL_WORLDS_DISABLED_ITEMS = JSONConfig4Fabric.JSONValueType.toJavaValue(DISABLED_ITEMS.get("allWorlds"), new ArrayList<Object>());
+    // let's skip all the other values obtained in a similar way...
+    // And now, for example, we need reload time of chunkDestructorWand. Let's find it!
     public static final int CHUNK_DESTRUCTOR_WAND_RELOAD_TIME =
-    JSONConfigHandler.ParseUtils.asInt(JSONConfigHandler.ParseUtils.asMap(JSONConfigHandler.ParseUtils.asMap(config.asMap(
+    JSONConfig4Fabric.JSONValue.of(JSONConfig4Fabric.JSONValue.of(JSONConfig4Fabric.JSONValue.of(config.getAsJavaValue(
     "specialItemsSettings", new HashMap<String, Object>()).get(
-    "destructionWands"), new HashMap<String, Object>()).get(
-    "chunkDestructorWand"), new HashMap<String, Object>()).get(
-    "relaod"), 10000)
+    "destructionWands")).toJavaValue(new HashMap<String, Object>()).get(
+    "chunkDestructorWand")).toJavaValue(new HashMap<String, Object>()).get(
+    "reload")).toJavaValue(10000);
     // The remaining values can be obtained in the same way...
 ```
 
-Phew, that wasn't easy, let me understand, how we've got chunk destructor wand reload.
+Phew, that wasn't easy, let me explain, how we've got chunk destructor wand reload.
 ```java
   //First we've got specialItemsSettings as map
-  Map<String, Object> SPECIAL_ITEMS_SETTINGS = config.asMap("specialItemsSettings", new HashMap<String, Object>());
+  Map<String, Object> SPECIAL_ITEMS_SETTINGS = config.getAsJavaValue("specialItemsSettings", new HashMap<String, Object>());
   // Next we've got destructionWands and chunkDestructorWand as maps, by doing so
-  Map<String, Object> DESTRUCTION_WANDS = JSONConfigHandler.ParseUtils.asMap(SPECIAL_ITEMS_SETTINGS.get("destructionWands", new HashMap<String, Object>());
-  Map<String, Object> CHUNK_DESTRUCTOR_WAND = JSONConfigHandler.ParseUtils.asMap(DESTRUCTION_WANDS.get("chunkDestructorWand", new HashMap<String, Object>());
+  Map<String, Object> DESTRUCTION_WANDS = JSONConfig4Fabric.JSONValue.of(SPECIAL_ITEMS_SETTINGS.get("destructionWands")).toJavaValue(new HashMap<String, Object>());
+  Map<String, Object> CHUNK_DESTRUCTOR_WAND = JSONConfig4Fabric.JSONValue.of(DESTRUCTION_WANDS.get("chunkDestructorWand")).toJavaValue(new HashMap<String, Object>());
   // And finally we've got a reload value
-  int CHUNK_DESTRUCTOR_WAND_RELOAD = JSONConfigHandler.ParseUtils.asInt(CHUNK_DESTRUCTOR_WAND.get("reload", 10000);
+  int CHUNK_DESTRUCTOR_WAND_RELOAD = JSONConfig4Fabric.JSONValue.of(CHUNK_DESTRUCTOR_WAND.get("reload")).toJavaValue(10000);
 ```
 
 To my mind, this looks much more understandable, but in the main example I've just done it in one line! 
