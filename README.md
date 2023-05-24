@@ -3,6 +3,10 @@
 
 ---
 
+# IMPORTANT
+
+THIS PROJECT HAVE BECOME LIBRARY! FROM NOW THIS REPOSITORY BECOMES ARCHIVE! YOU CAN FIND NEW VERSIONS [HERE](https://github.com/Nedelis/JSONConfig4Java)
+
 # jsonconfig4fabric
 
 Welcome to the jsonconfig4fabric! This is relatively simple utility for creating and use .json configs in your mods. Here you can find out how to use jsonconfig4fabric.
